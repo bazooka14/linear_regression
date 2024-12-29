@@ -19,3 +19,29 @@ def train(X, Y, iterations, lr):
             return w
 
     raise Exception("Couldn't converge within %d iterations" % iterations)
+
+def predict_bias(X, w, b):
+    return X * w + b
+
+def loss_bias(X, Y, w, b):
+    return np.average((predict_bias(X, w, b) - Y) ** 2)
+
+def train_bias(X, Y, iterations, lr):
+    w = b = 0
+    for i in range(iterations):
+        current_loss = loss_bias(X, Y, w, b)
+        if i % 300 == 0:
+            print("Iteration %4d => Loss: %.6f" % (i, current_loss))
+
+        if loss_bias(X, Y, w + lr, b) < current_loss:
+            w += lr
+        elif loss_bias(X, Y, w - lr, b) < current_loss:
+            w -= lr
+        elif loss_bias(X, Y, w, b + lr) < current_loss:
+            b += lr
+        elif loss_bias(X, Y, w, b - lr) < current_loss:
+            b -= lr
+        else:
+            return w, b
+
+    raise Exception("Couldn't converge within %d iterations" % iterations)
